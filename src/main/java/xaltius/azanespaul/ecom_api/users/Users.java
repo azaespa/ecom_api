@@ -1,6 +1,7 @@
 package xaltius.azanespaul.ecom_api.users;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import xaltius.azanespaul.ecom_api.customer.Customer;
 import xaltius.azanespaul.ecom_api.seller.Seller;
@@ -20,8 +21,14 @@ public class Users implements Serializable {
     private String name;
     private String address;
     private String email;
+
+    @NotEmpty(message = "Mobile is required.")
     private String mobile;
+
+    @NotEmpty(message = "Password is required.")
     private String password;
+
+    @NotEmpty(message = "Role is required.")
     private String role;
 
     @Getter(AccessLevel.NONE)
