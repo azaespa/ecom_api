@@ -51,6 +51,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/register/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sellers").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.POST, "/login/seller").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.GET, "/customer/**").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.GET, "/customers").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/login/customer").hasAuthority("ROLE_Customer")
                 )

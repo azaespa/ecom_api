@@ -12,6 +12,9 @@ public class UsersToUsersDtoConverter implements Converter<Users, UsersDto> {
     public UsersDto convert(Users source) {
 
         final UsersDto usersDto = new UsersDto(source.getUsersId(),
+                source.getName(),
+                source.getAddress(),
+                source.getEmail(),
                 source.getMobile(),
                 source.getRole());
 

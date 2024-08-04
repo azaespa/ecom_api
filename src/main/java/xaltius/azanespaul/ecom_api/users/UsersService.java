@@ -11,8 +11,7 @@ import xaltius.azanespaul.ecom_api.customer.Customer;
 import xaltius.azanespaul.ecom_api.customer.CustomerService;
 import xaltius.azanespaul.ecom_api.seller.Seller;
 import xaltius.azanespaul.ecom_api.seller.SellerService;
-
-import java.util.List;
+import xaltius.azanespaul.ecom_api.users.exception.UsersMobileAlreadyTakenException;
 
 @Service
 @Transactional
@@ -34,11 +33,16 @@ public class UsersService implements UserDetailsService {
     }
 
     public Users saveUsersAsCustomer(Users users) {
+        users.setRole("Customer");
+
+        //Check if the username is already taken.
+        usersRepository.findByMobile(users.getMobile())
+                .ifPresent(data -> {
+                    throw new UsersMobileAlreadyTakenException();
+                });
+
         Users savedUsers = usersRepository.save(users);
         savedUsers.setPassword(passwordEncoder.encode(savedUsers.getPassword()));
-        savedUsers.setRole("Customer");
-
-        //Check if the username is already taken..
 
         Customer newCustomer = new Customer();
         newCustomer.setUsers(savedUsers);
@@ -48,11 +52,16 @@ public class UsersService implements UserDetailsService {
     }
 
     public Users saveUsersAsSeller(Users users) {
+        users.setRole("Seller");
+
+        //Check if the username is already taken.
+        usersRepository.findByMobile(users.getMobile())
+                .ifPresent(data -> {
+                    throw new UsersMobileAlreadyTakenException();
+                });
+
         Users savedUsers = usersRepository.save(users);
         savedUsers.setPassword(passwordEncoder.encode(savedUsers.getPassword()));
-        savedUsers.setRole("Seller");
-
-        //Check if the username is already taken..
 
         Seller newSeller = new Seller();
         newSeller.setUsers(savedUsers);

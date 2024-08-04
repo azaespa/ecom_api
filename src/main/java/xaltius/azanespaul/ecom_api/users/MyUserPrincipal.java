@@ -1,5 +1,6 @@
 package xaltius.azanespaul.ecom_api.users;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class MyUserPrincipal implements UserDetails {
 
     private Users users;
@@ -50,7 +52,4 @@ public class MyUserPrincipal implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
-    public Users getUsers() {
-        return users;
-    }
 }
