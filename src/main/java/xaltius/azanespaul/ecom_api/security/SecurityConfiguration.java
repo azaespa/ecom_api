@@ -21,6 +21,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,6 +37,8 @@ public class SecurityConfiguration {
     private final RSAPublicKey publicKey;
 
     private final RSAPrivateKey privateKey;
+
+    private final HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.COOKIES));
 
     public SecurityConfiguration() throws NoSuchAlgorithmException {
         // Generate a public/private key pair.
@@ -49,11 +54,13 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/register/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/seller/**").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.GET, "/sellers").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.POST, "/login/seller").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.GET, "/customer/**").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.GET, "/customers").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/login/customer").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.POST, "/products").hasAuthority("ROLE_Seller")
                 )
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())

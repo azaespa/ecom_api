@@ -1,13 +1,12 @@
 package xaltius.azanespaul.ecom_api.seller;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import xaltius.azanespaul.ecom_api.product.Product;
 import xaltius.azanespaul.ecom_api.users.Users;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,5 +22,10 @@ public class Seller implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "users_id", referencedColumnName = "usersId")
     private Users users;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "seller")
+    private List<Product> productList;
 
 }
