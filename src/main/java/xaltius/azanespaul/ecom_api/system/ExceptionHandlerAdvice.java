@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import xaltius.azanespaul.ecom_api.product.exception.ProductNotFoundException;
+import xaltius.azanespaul.ecom_api.seller.exception.SellerNotFoundException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersMobileAlreadyTakenException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersIdNotFoundException;
 
@@ -18,7 +20,10 @@ public class ExceptionHandlerAdvice {
         return new Result("Mobile or Password is incorrect.", HttpStatus.UNAUTHORIZED.value(), null);
     }
 
-    @ExceptionHandler({UsersIdNotFoundException.class, UsersMobileAlreadyTakenException.class})
+    @ExceptionHandler({UsersIdNotFoundException.class,
+            UsersMobileAlreadyTakenException.class,
+            ProductNotFoundException.class,
+            SellerNotFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Result handleUsersException(Exception ex) {
         return new Result(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);

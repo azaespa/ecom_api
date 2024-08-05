@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import xaltius.azanespaul.ecom_api.seller.exception.SellerNotFoundException;
 import xaltius.azanespaul.ecom_api.users.Users;
 import xaltius.azanespaul.ecom_api.users.UsersRepository;
 import xaltius.azanespaul.ecom_api.users.converter.UsersToUsersDtoConverter;
@@ -40,14 +41,22 @@ public class SellerService {
         return usersRepository.findAllByRole("Seller");
     }
 
-    public Users findSellerById(int id) {
-        return usersRepository.findById(id)
-                .orElseThrow(() -> new UsersIdNotFoundException(Integer.toString(id)));
+    public Users findUsersBySellerId(int sellerId) {
+        Seller seller = findSellerBySellerId(sellerId);
+        int sellerUsersId = seller.getUsers().getUsersId();
+
+        return usersRepository.findById(sellerUsersId)
+                .orElseThrow(() -> new SellerNotFoundException(Integer.toString(sellerId)));
     }
 
     public Seller findSellerByUsersId(int usersId) {
         return sellerRepository.findSellerByUsersId(usersId)
                 .orElseThrow(() -> new UsersIdNotFoundException(Integer.toString(usersId)));
+    }
+
+    public Seller findSellerBySellerId(int sellerId) {
+        return sellerRepository.findSellerBySellerId(sellerId)
+                .orElseThrow(() -> new SellerNotFoundException(Integer.toString(sellerId)));
     }
 
     public Map<String, Object> findCurrentlyLoggedInSeller() {

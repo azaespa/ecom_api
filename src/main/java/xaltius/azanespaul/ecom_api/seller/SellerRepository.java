@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface SellerRepository extends JpaRepository<Seller, Integer> {
     @Query("FROM Seller s where s.users.id = :usersId")
     Optional<Seller> findSellerByUsersId(@Param("usersId") int usersId);
+
+    Optional<Seller> findSellerBySellerId(int sellerId);
 }

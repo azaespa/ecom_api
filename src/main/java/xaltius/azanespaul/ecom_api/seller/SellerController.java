@@ -21,8 +21,8 @@ public class SellerController {
     }
 
     @GetMapping("/seller/{sellerId}")
-    public Users getSellerById(@PathVariable int sellerId) {
-        return sellerService.findSellerById(sellerId);
+    public Users getUsersBySellerId(@PathVariable int sellerId) {
+        return sellerService.findUsersBySellerId(sellerId);
     }
 
     @GetMapping("/seller/current")

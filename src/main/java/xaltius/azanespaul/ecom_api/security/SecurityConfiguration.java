@@ -54,7 +54,9 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/register/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/seller/**").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/seller/{sellerId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/seller/current").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.GET, "/sellers").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.POST, "/login/seller").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.GET, "/customer/**").hasAuthority("ROLE_Customer")
