@@ -54,6 +54,7 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/register/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/seller/{sellerId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/seller/current").hasAuthority("ROLE_Seller")
@@ -63,6 +64,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/customers").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/login/customer").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/products").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ROLE_Seller")
                 )
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
