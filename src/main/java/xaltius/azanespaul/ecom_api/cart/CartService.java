@@ -16,6 +16,8 @@ import xaltius.azanespaul.ecom_api.users.Users;
 import xaltius.azanespaul.ecom_api.users.UsersRepository;
 import xaltius.azanespaul.ecom_api.users.exception.UsersMobileNotFoundException;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CartService {
@@ -58,5 +60,36 @@ public class CartService {
         CartDto cartDto = cartToCartDtoConverter.convert(cart);
 
         return cartDto;
+    }
+
+    public List<CartDto> findAll() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        Customer customer = customerService.findCustomerByUsersId(users.getUsersId());
+
+        List<Cart> cartList = cartRepository.findAllByCustomerId(customer.getCustomerId());
+
+        List<CartDto> cartDtoList = cartList.stream().map(cartToCartDtoConverter::convert).toList();
+
+        return cartDtoList;
+    }
+
+    public void deleteItemFromCart(Cart cart) {
+        cartRepository.deleteById(cart.getCartId());
+    }
+
+    public void deleteAllItemsFromCart() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        Customer customer = customerService.findCustomerByUsersId(users.getUsersId());
+        cartRepository.deleteByCustomerId(customer.getCustomerId());
     }
 }

@@ -67,6 +67,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.POST, "/cart/add").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.GET, "/cart").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.DELETE, "/cart/**").hasAuthority("ROLE_Customer")
                 )
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
