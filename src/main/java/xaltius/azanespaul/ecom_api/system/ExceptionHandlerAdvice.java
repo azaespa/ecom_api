@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import xaltius.azanespaul.ecom_api.customer.exception.CustomerNotFoundException;
 import xaltius.azanespaul.ecom_api.product.exception.ProductInvalidSellerException;
 import xaltius.azanespaul.ecom_api.product.exception.ProductNotFoundException;
 import xaltius.azanespaul.ecom_api.seller.exception.SellerNotFoundException;
@@ -25,7 +26,8 @@ public class ExceptionHandlerAdvice {
             UsersMobileAlreadyTakenException.class,
             ProductNotFoundException.class,
             SellerNotFoundException.class,
-            ProductInvalidSellerException.class})
+            ProductInvalidSellerException.class,
+            CustomerNotFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Result handleUsersException(Exception ex) {
         return new Result(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);

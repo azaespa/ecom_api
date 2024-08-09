@@ -1,13 +1,12 @@
 package xaltius.azanespaul.ecom_api.product;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import xaltius.azanespaul.ecom_api.cart.Cart;
 import xaltius.azanespaul.ecom_api.seller.Seller;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,4 +28,9 @@ public class Product implements Serializable {
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false, updatable = false)
     private Seller seller;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "product")
+    private List<Cart> cart;
 }
