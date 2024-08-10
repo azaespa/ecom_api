@@ -1,11 +1,9 @@
 package xaltius.azanespaul.ecom_api.cart;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import xaltius.azanespaul.ecom_api.customer.Customer;
+import xaltius.azanespaul.ecom_api.order.Orders;
 import xaltius.azanespaul.ecom_api.product.Product;
 
 import java.io.Serializable;
@@ -29,4 +27,11 @@ public class Cart implements Serializable {
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", referencedColumnName = "productId")
     private Product product;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "cart")
+    private List<Orders> orders;
+
+    private int isActive;
 }

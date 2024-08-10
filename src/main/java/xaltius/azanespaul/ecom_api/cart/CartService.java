@@ -55,11 +55,11 @@ public class CartService {
         Cart item = new Cart();
         item.setProduct(product);
         item.setCustomer(customer);
+        item.setIsActive(1);
 
         Cart cart = cartRepository.save(item);
-        CartDto cartDto = cartToCartDtoConverter.convert(cart);
 
-        return cartDto;
+        return cartToCartDtoConverter.convert(cart);
     }
 
     public List<CartDto> findAll() {
@@ -71,7 +71,7 @@ public class CartService {
 
         Customer customer = customerService.findCustomerByUsersId(users.getUsersId());
 
-        List<Cart> cartList = cartRepository.findAllByCustomerId(customer.getCustomerId());
+        List<Cart> cartList = cartRepository.findAllByCustomerIdAndStatus(customer.getCustomerId(), 1);
 
         List<CartDto> cartDtoList = cartList.stream().map(cartToCartDtoConverter::convert).toList();
 
@@ -91,5 +91,10 @@ public class CartService {
 
         Customer customer = customerService.findCustomerByUsersId(users.getUsersId());
         cartRepository.deleteByCustomerId(customer.getCustomerId());
+    }
+
+    public void updateCartItemsToInactive(List<CartDto> cartDtoList) {
+        List<Integer> cartIdList = cartDtoList.stream().map(CartDto::cartId).toList();
+        cartRepository.updateCartItemsStatus(cartIdList);
     }
 }

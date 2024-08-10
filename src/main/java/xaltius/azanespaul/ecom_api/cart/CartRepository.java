@@ -10,10 +10,14 @@ import java.util.List;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-    @Query("FROM Cart c where c.customer.id = :customerId")
-    List<Cart> findAllByCustomerId(@Param("customerId") int customerId);
+    @Query(nativeQuery = true, value = "SELECT * FROM Cart WHERE customer_id = :customerId AND is_active = :isActive")
+    List<Cart> findAllByCustomerIdAndStatus(@Param("customerId") int customerId, @Param("isActive") int isActive);
 
     @Modifying
     @Query("DELETE FROM Cart c where c.customer.id = :customerId")
     void deleteByCustomerId(@Param("customerId") int customerId);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE Cart SET is_active = 0 WHERE cart_id IN :cartIdList")
+    void updateCartItemsStatus(@Param("cartIdList") List<Integer> cartIdList);
 }
