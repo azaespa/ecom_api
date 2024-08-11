@@ -38,7 +38,8 @@ public class SecurityConfiguration {
 
     private final RSAPrivateKey privateKey;
 
-    private final HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.COOKIES));
+    private final HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(
+            new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.COOKIES));
 
     public SecurityConfiguration() throws NoSuchAlgorithmException {
         // Generate a public/private key pair.
@@ -57,19 +58,23 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/seller/{sellerId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/seller/current").hasAuthority("ROLE_Seller")
-                        .requestMatchers(HttpMethod.GET, "/sellers").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.POST, "/login/seller").hasAuthority("ROLE_Seller")
-                        .requestMatchers(HttpMethod.GET, "/customer/**").hasAuthority("ROLE_Customer")
-                        .requestMatchers(HttpMethod.GET, "/customers").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/login/customer").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/products").hasAuthority("ROLE_Seller")
-                        .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("ROLE_Seller")
-                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ROLE_Seller")
                         .requestMatchers(HttpMethod.POST, "/cart/add").hasAuthority("ROLE_Customer")
-                        .requestMatchers(HttpMethod.GET, "/cart").hasAuthority("ROLE_Customer")
-                        .requestMatchers(HttpMethod.DELETE, "/cart/**").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.POST, "/order/place").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.GET, "/seller/current").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.GET, "/sellers").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.GET, "/customer/**").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.GET, "/customers").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.GET, "/cart").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.PUT, "/seller/**").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.PUT, "/customer/**").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.DELETE, "/seller/**").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.DELETE, "/customer/**").hasAuthority("ROLE_Customer")
+                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ROLE_Seller")
+                        .requestMatchers(HttpMethod.DELETE, "/cart/**").hasAuthority("ROLE_Customer")
                         .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyAuthority("ROLE_Customer", "ROLE_Seller")
                         .requestMatchers(HttpMethod.PUT, "/orders/**").hasAnyAuthority("ROLE_Customer", "ROLE_Seller")
                         .requestMatchers(HttpMethod.DELETE, "/orders/**").hasAnyAuthority("ROLE_Customer", "ROLE_Seller")

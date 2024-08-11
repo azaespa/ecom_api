@@ -21,6 +21,7 @@ public class Users implements Serializable {
     private String name;
     private String address;
     private String email;
+    private String card;
 
     @NotEmpty(message = "Mobile is required.")
     private String mobile;

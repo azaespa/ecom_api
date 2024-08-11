@@ -2,6 +2,8 @@ package xaltius.azanespaul.ecom_api.users;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +14,7 @@ import xaltius.azanespaul.ecom_api.customer.CustomerService;
 import xaltius.azanespaul.ecom_api.seller.Seller;
 import xaltius.azanespaul.ecom_api.seller.SellerService;
 import xaltius.azanespaul.ecom_api.users.exception.UsersMobileAlreadyTakenException;
+import xaltius.azanespaul.ecom_api.users.exception.UsersMobileNotFoundException;
 
 @Service
 @Transactional
@@ -75,6 +78,30 @@ public class UsersService implements UserDetailsService {
         return usersRepository.findByMobile(mobile)
                 .map(MyUserPrincipal::new)
                 .orElseThrow(() -> new UsernameNotFoundException("mobile " + mobile + " is not found."));
+    }
+
+    public Users updateLoggedInUsers(Users u) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setName(u.getName());
+
+        return usersRepository.save(users);
+    }
+
+    public Users updatePassword(Users u) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setPassword(passwordEncoder.encode(u.getPassword()));
+
+        return usersRepository.save(users);
     }
 }
 

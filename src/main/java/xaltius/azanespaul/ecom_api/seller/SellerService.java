@@ -11,6 +11,7 @@ import xaltius.azanespaul.ecom_api.users.UsersRepository;
 import xaltius.azanespaul.ecom_api.users.converter.UsersToUsersDtoConverter;
 import xaltius.azanespaul.ecom_api.users.dto.UsersDto;
 import xaltius.azanespaul.ecom_api.users.exception.UsersIdNotFoundException;
+import xaltius.azanespaul.ecom_api.users.exception.UsersMobileAlreadyTakenException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersMobileNotFoundException;
 
 import java.util.HashMap;
@@ -72,5 +73,24 @@ public class SellerService {
         sellerMap.put("sellerInfo", usersDto);
 
         return sellerMap;
+    }
+
+    public Users updateMobile(Users u) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        if (!u.getMobile().equals(usersMobile)) {
+            usersRepository.findByMobile(u.getMobile())
+                    .ifPresent(data -> {
+                        throw new UsersMobileAlreadyTakenException();
+                    });
+        }
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setMobile(u.getMobile());
+
+        return usersRepository.save(users);
     }
 }

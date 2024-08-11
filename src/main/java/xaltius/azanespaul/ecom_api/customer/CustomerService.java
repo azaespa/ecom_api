@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import xaltius.azanespaul.ecom_api.customer.exception.CustomerNotFoundException;
 import xaltius.azanespaul.ecom_api.seller.Seller;
@@ -12,7 +13,9 @@ import xaltius.azanespaul.ecom_api.users.Users;
 import xaltius.azanespaul.ecom_api.users.UsersRepository;
 import xaltius.azanespaul.ecom_api.users.converter.UsersToUsersDtoConverter;
 import xaltius.azanespaul.ecom_api.users.dto.UsersDto;
+import xaltius.azanespaul.ecom_api.users.exception.UsersAddressTypeException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersIdNotFoundException;
+import xaltius.azanespaul.ecom_api.users.exception.UsersMobileAlreadyTakenException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersMobileNotFoundException;
 
 import java.util.HashMap;
@@ -31,6 +34,12 @@ public class CustomerService {
 
     @Autowired
     private UsersToUsersDtoConverter usersToUsersDtoConverter;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public CustomerService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public void saveCustomer(Customer customer) {
         customerRepository.save(customer);
@@ -71,5 +80,67 @@ public class CustomerService {
         customerMap.put("customerInfo", usersDto);
 
         return customerMap;
+    }
+
+    public Users updateCreditCard(Users u) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setCard(passwordEncoder.encode(u.getCard()));
+
+        return usersRepository.save(users);
+    }
+
+    public Users updateAddress(Users u, String type) {
+        if (!type.equals("home")) {
+            throw new UsersAddressTypeException(type);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setAddress(u.getAddress());
+
+        return usersRepository.save(users);
+    }
+
+    public Users updateCredentials(Users u) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        if (!u.getMobile().equals(usersMobile)) {
+            usersRepository.findByMobile(u.getMobile())
+                    .ifPresent(data -> {
+                        throw new UsersMobileAlreadyTakenException();
+                    });
+        }
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setEmail(u.getEmail());
+        users.setMobile(u.getMobile());
+
+        return usersRepository.save(users);
+    }
+
+    public void deleteAddress(String type) {
+        if (!type.equals("home")) {
+            throw new UsersAddressTypeException(type);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usersMobile = authentication.getName();
+
+        Users users = usersRepository.findByMobile(usersMobile)
+                .orElseThrow(() -> new UsersMobileNotFoundException(usersMobile));
+
+        users.setAddress("");
     }
 }

@@ -10,6 +10,7 @@ import xaltius.azanespaul.ecom_api.customer.exception.CustomerNotFoundException;
 import xaltius.azanespaul.ecom_api.product.exception.ProductInvalidSellerException;
 import xaltius.azanespaul.ecom_api.product.exception.ProductNotFoundException;
 import xaltius.azanespaul.ecom_api.seller.exception.SellerNotFoundException;
+import xaltius.azanespaul.ecom_api.users.exception.UsersAddressTypeException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersMobileAlreadyTakenException;
 import xaltius.azanespaul.ecom_api.users.exception.UsersIdNotFoundException;
 
@@ -27,7 +28,8 @@ public class ExceptionHandlerAdvice {
             ProductNotFoundException.class,
             SellerNotFoundException.class,
             ProductInvalidSellerException.class,
-            CustomerNotFoundException.class})
+            CustomerNotFoundException.class,
+            UsersAddressTypeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Result handleUsersException(Exception ex) {
         return new Result(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), null);
